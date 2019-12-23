@@ -1,0 +1,1 @@
+You can find the links of pre-trained model weights on the [BigEarthNet Deep Models repository](https://gitlab.tu-berlin.de/rsim/bigearthnet-models). After downloading the zip files, you can directly extract each file to here that is compatible with existing configuration JSON files. 
