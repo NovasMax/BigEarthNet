@@ -18,7 +18,6 @@ The script `train.py` expects a `JSON` configuration file path as a comand line 
 * `save_checkpoint_per_iteration`: The number of iterations per which a checkpoint is written, i.e., when `iteration_index % save_checkpoint_per_iteration == 0`.
 * `tr_tf_record_files`: An array containing `TFRecord` files for training.
 * `val_tf_record_files`: An array containing `TFRecord` files for validation (not used for now).
-* `label_type`: The type of the labels used, either `original` or `compact`. Find more info about this [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-models/blob/master/README.md).
 * `fine_tune`: A flag to indicate if the training of the model will continue from the existing checkpoint whose path will be defined by `pretrained_model_path`.
 * `model_file`: The base name of a pre-trained model snapshot (i.e., checkpoint).
 * `shuffle_buffer_size`: The number of elements which will be shuffled at the beginning of each epoch. It is not recommended to have large shuffle buffer if you don't have enough space in memory. 
@@ -30,7 +29,6 @@ The script `eval.py` expects a `JSON` configuration file. The needed parameters 
 * `batch_size`: Batch size used during evaluation
 * `out_dir`: The path where all log files and checkpoints will be saved.
 * `test_tf_record_files`: An array containing `TFRecord` files for evaluation.
-* `label_type`: The type of the labels used, either `original` or `compact`. Find more info about this [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-models/blob/master/README.md).
 * `model_file`: The base name of a pre-trained model snapshot (i.e., checkpoint).
 * `test_size`: The size of the test set. If you are using test set suggested in [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-models/), it is already set.
 
