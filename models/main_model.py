@@ -19,7 +19,7 @@ class Model:
         self.label_type = label_type
         self.prediction_threshold = 0.5
         self.is_training = tf.placeholder(tf.bool, [])
-        self.nb_class = 19 if label_type == 'compact' else 43
+        self.nb_class = 19 if label_type == 'BigEarthNet-19' else 43
         self.B01 = tf.placeholder(tf.float32, [None, 20, 20], name='B01')
         self.B02 = tf.placeholder(tf.float32, [None, 120, 120], name='B02')
         self.B03 = tf.placeholder(tf.float32, [None, 120, 120], name='B03')
@@ -64,13 +64,13 @@ class Model:
         multi_hot_label = batch_dict[
                 'original_labels_multi_hot'
             ].astype(np.float) if self.label_type == 'original' else batch_dict[
-                'compact_labels_multi_hot'
+                'BigEarthNet-19_labels_multi_hot'
             ].astype(np.float)
 
         # Label and patch names can be read in the following way:
         #
         # original_labels = sparse_to_dense(batch_dict['original_labels'].indices, batch_dict['original_labels'].values)
-        # compact_labels = sparse_to_dense(batch_dict['compact_labels'].indices, batch_dict['compact_labels'].values)
+        # BigEarthNet-19_labels = sparse_to_dense(batch_dict['BigEarthNet-19_labels'].indices, batch_dict['BigEarthNet-19_labels'].values)
         # patch_name = sparse_to_dense(batch_dict['patch_name'].indices, batch_dict['patch_name'].values)
         
         return {

@@ -38,7 +38,8 @@ def run_model(args):
             args['tr_tf_record_files'], 
             args['batch_size'], 
             args['nb_epoch'], 
-            args['shuffle_buffer_size']
+            args['shuffle_buffer_size'],
+            args['label_type']
         ).batch_iterator
         nb_iteration = int(np.ceil(float(args['training_size'] * args['nb_epoch']) / args['batch_size']))
         iterator_ins = iterator.get_next()

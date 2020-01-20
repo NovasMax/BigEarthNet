@@ -118,12 +118,25 @@ class DNN_model(Model):
             feature = self.dropout(out, 0.5, is_training, 'dropout_3')  
             return feature
 
+    def branch_model_60m(self, inputs, is_training):
+        with tf.variable_scope('CNN_60m_branch'):
+            out = self.conv_block(inputs, 32, [2,2], is_training, 'conv_block_0')
+            out = self.dropout(out, 0.25, is_training, 'dropout_0')
+            out = self.conv_block(out, 32, [2,2], is_training, 'conv_block_1')
+            out = self.dropout(out, 0.25, is_training, 'dropout_1')
+            out = self.conv_block(out, 32, [2,2], is_training, 'conv_block_2')
+            out = self.dropout(out, 0.25, is_training, 'dropout_2')
+            out = tf.contrib.layers.flatten(out)
+            out = self.fully_connected_block(out, self.feature_size, is_training, 'fc_block_0')
+            feature = self.dropout(out, 0.5, is_training, 'dropout_3') 
+            return feature
+
     def create_network(self): 
         branch_features = []
         for img_bands, nb_bands, branch_model in zip(
-            [self.bands_10m, self.bands_20m], 
-            [self.nb_bands_10m, self.nb_bands_20m],
-            [self.branch_model_10m, self.branch_model_20m]
+            [self.bands_10m, self.bands_20m, self.bands_60m], 
+            [self.nb_bands_10m, self.nb_bands_20m, self.nb_bands_60m],
+            [self.branch_model_10m, self.branch_model_20m, self.branch_model_60m]
             ):
             branch_features.append(tf.reshape(branch_model(img_bands, self.is_training), [-1, self.feature_size]))
 

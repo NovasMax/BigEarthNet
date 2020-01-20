@@ -28,7 +28,8 @@ def eval_model(args):
             args['test_tf_record_files'], 
             args['batch_size'], 
             1, 
-            0
+            0,
+            args['label_type']
         ).batch_iterator
         nb_iteration = int(np.ceil(float(args['test_size']) / args['batch_size']))
         iterator_ins = iterator.get_next()

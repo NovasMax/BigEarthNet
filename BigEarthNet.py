@@ -41,20 +41,26 @@ BAND_STATS = {
         }
 
 class BigEarthNet:
-    def __init__(self, TFRecord_paths, batch_size, nb_epoch, shuffle_buffer_size):     
+    def __init__(self, TFRecord_paths, batch_size, nb_epoch, shuffle_buffer_size, label_type):
+        self.label_type = label_type   
         dataset = tf.data.TFRecordDataset(TFRecord_paths)
         if shuffle_buffer_size > 0:
             dataset = dataset.shuffle(buffer_size=shuffle_buffer_size)
         dataset = dataset.repeat(nb_epoch)
 
         dataset = dataset.map(
-            self.parse_function, num_parallel_calls=10)
+            lambda x: self.parse_function(x, self.label_type), 
+            num_parallel_calls=10
+        )
 
         dataset = dataset.batch(batch_size, drop_remainder=False)
         self.dataset = dataset.prefetch(10)
         self.batch_iterator = self.dataset.make_one_shot_iterator()
-       
-    def parse_function(self, example_proto):
+
+
+    def parse_function(self, example_proto, label_type):
+        nb_class = 43 if label_type == 'original' else 19
+
         parsed_features = tf.parse_single_example(
                 example_proto, 
                 {
@@ -70,9 +76,9 @@ class BigEarthNet:
                     'B09': tf.FixedLenFeature([20*20], tf.int64),
                     'B11': tf.FixedLenFeature([60*60], tf.int64),
                     'B12': tf.FixedLenFeature([60*60], tf.int64),
-                    'original_labels': tf.VarLenFeature(dtype=tf.string),
-                    'original_labels_multi_hot': tf.FixedLenFeature([43], tf.int64),
-                    'patch_name': tf.VarLenFeature(dtype=tf.string)
+                    'patch_name': tf.VarLenFeature(dtype=tf.string),
+                    label_type + '_labels': tf.VarLenFeature(dtype=tf.string),
+                    label_type + '_labels_multi_hot': tf.FixedLenFeature([nb_class], tf.int64)
                 }
             )
 
@@ -89,7 +95,7 @@ class BigEarthNet:
             'B09': tf.reshape(parsed_features['B09'], [20, 20]),
             'B11': tf.reshape(parsed_features['B11'], [60, 60]),
             'B12': tf.reshape(parsed_features['B12'], [60, 60]),
-            'original_labels_multi_hot': parsed_features['original_labels_multi_hot'],
-            'original_labels': parsed_features['original_labels'],
-            'patch_name': parsed_features['patch_name']
+            'patch_name': parsed_features['patch_name'],
+            label_type + '_labels': parsed_features[label_type + '_labels'],
+            label_type + '_labels_multi_hot': parsed_features[label_type + '_labels_multi_hot']
         }
