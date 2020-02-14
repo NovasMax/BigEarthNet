@@ -37,10 +37,6 @@ The script `eval.py` expects a `JSON` configuration file. The needed parameters 
 * `model_file`: The base name of a pre-trained model snapshot (i.e., checkpoint).
 * `test_size`: The size of the test set. If you are using test set suggested in [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-models/), it is already set.
 
-## Bugs and Requests
-If you face a bug or have a feature request, please create an issue:
-https://gitlab.tubit.tu-berlin.de/rsim/bigearthnet-models/issues
-
 Authors
 -------
 
