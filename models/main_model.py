@@ -49,23 +49,23 @@ class Model:
         self.model_path = tf.placeholder(tf.string)
 
     def feed_dict(self, batch_dict, is_training=False, model_path=''):
-        B01  = (batch_dict['B01'] - BAND_STATS['mean']['B01']) / BAND_STATS['std']['B01']
-        B02  = (batch_dict['B02'] - BAND_STATS['mean']['B02']) / BAND_STATS['std']['B02']
-        B03  = (batch_dict['B03'] - BAND_STATS['mean']['B03']) / BAND_STATS['std']['B03']
-        B04  = (batch_dict['B04'] - BAND_STATS['mean']['B04']) / BAND_STATS['std']['B04']
-        B05  = (batch_dict['B05'] - BAND_STATS['mean']['B05']) / BAND_STATS['std']['B05']
-        B06  = (batch_dict['B06'] - BAND_STATS['mean']['B06']) / BAND_STATS['std']['B06']
-        B07  = (batch_dict['B07'] - BAND_STATS['mean']['B07']) / BAND_STATS['std']['B07']
-        B08  = (batch_dict['B08'] - BAND_STATS['mean']['B08']) / BAND_STATS['std']['B08']
-        B8A  = (batch_dict['B8A'] - BAND_STATS['mean']['B8A']) / BAND_STATS['std']['B8A']
-        B09  = (batch_dict['B09'] - BAND_STATS['mean']['B09']) / BAND_STATS['std']['B09']
-        B11  = (batch_dict['B11'] - BAND_STATS['mean']['B11']) / BAND_STATS['std']['B11']
-        B12  = (batch_dict['B12'] - BAND_STATS['mean']['B12']) / BAND_STATS['std']['B12']
+        B01  = ((batch_dict['B01'] - BAND_STATS['mean']['B01']) / BAND_STATS['std']['B01']).astype(np.float32)
+        B02  = ((batch_dict['B02'] - BAND_STATS['mean']['B02']) / BAND_STATS['std']['B02']).astype(np.float32)
+        B03  = ((batch_dict['B03'] - BAND_STATS['mean']['B03']) / BAND_STATS['std']['B03']).astype(np.float32)
+        B04  = ((batch_dict['B04'] - BAND_STATS['mean']['B04']) / BAND_STATS['std']['B04']).astype(np.float32)
+        B05  = ((batch_dict['B05'] - BAND_STATS['mean']['B05']) / BAND_STATS['std']['B05']).astype(np.float32)
+        B06  = ((batch_dict['B06'] - BAND_STATS['mean']['B06']) / BAND_STATS['std']['B06']).astype(np.float32)
+        B07  = ((batch_dict['B07'] - BAND_STATS['mean']['B07']) / BAND_STATS['std']['B07']).astype(np.float32)
+        B08  = ((batch_dict['B08'] - BAND_STATS['mean']['B08']) / BAND_STATS['std']['B08']).astype(np.float32)
+        B8A  = ((batch_dict['B8A'] - BAND_STATS['mean']['B8A']) / BAND_STATS['std']['B8A']).astype(np.float32)
+        B09  = ((batch_dict['B09'] - BAND_STATS['mean']['B09']) / BAND_STATS['std']['B09']).astype(np.float32)
+        B11  = ((batch_dict['B11'] - BAND_STATS['mean']['B11']) / BAND_STATS['std']['B11']).astype(np.float32)
+        B12  = ((batch_dict['B12'] - BAND_STATS['mean']['B12']) / BAND_STATS['std']['B12']).astype(np.float32)
         multi_hot_label = batch_dict[
                 'original_labels_multi_hot'
-            ].astype(np.float) if self.label_type == 'original' else batch_dict[
+            ].astype(np.float32) if self.label_type == 'original' else batch_dict[
                 'BigEarthNet-19_labels_multi_hot'
-            ].astype(np.float)
+            ].astype(np.float32)
 
         # Label and patch names can be read in the following way:
         #
