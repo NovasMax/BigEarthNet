@@ -62,7 +62,8 @@ def run_model(args):
 
         if args['fine_tune']:
             model_saver.restore(sess, args['model_file'])
-            iteration_idx = int(args['model_file'].split('iteration-')[-1])
+            if 'iteration' in args['model_file']:
+                iteration_idx = int(args['model_file'].split('iteration-')[-1])
 
         summary_op = tf.summary.merge_all()
         summary_writer = tf.summary.FileWriter(os.path.join(args['out_dir'], 'logs', 'training'), sess.graph)
