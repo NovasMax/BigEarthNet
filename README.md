@@ -6,10 +6,10 @@ This repository contains code to use deep learning models, pre-trained on the [B
 * For BigEarthNet-19 labels, it is highly recommended to first check the [BigEarthNet-19 Deep Learning Models repository](https://gitlab.tu-berlin.de/rsim/bigearthnet-19-models).
 
 ## Prerequisites
-* The definitions of ResNet and VGG models are based on their TensorFlow-Slim implementations. Thus, you need to first download the `nets` folder of [TensorFlow-Slim repository](https://github.com/tensorflow/models/tree/master/research/slim/nets) to the root folder.
+* The definitions of ResNet and VGG models are based on their TensorFlow-Slim implementations. The `nets` folder of [TensorFlow-Slim repository](https://github.com/tensorflow/models/tree/master/research/slim/nets) with small modifications are already included in the root folder. Please note that license information of this repository does not cover the [nets folder](https://gitlab.tu-berlin.de/rsim/bigearthnet-models-tf/tree/master/nets), which is licensed under the [Apache License 2.0](https://github.com/tensorflow/models/blob/master/LICENSE). 
 * The `prep_splits.py` script from [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-models/blob/master/prep_splits.py) for original labels and the `prep_splits_BigEarthNet-19.py` script from [here](https://gitlab.tu-berlin.de/rsim/bigearthnet-19-models/blob/master/prep_splits.py) for BigEarthNet-19 labels generate `TFRecord` files for train, validation and test sets from the BigEarthNet archive. To train or evaluate any model, required TFRecord files should be first prepared. 
 * Config files of each model, which was used to train corresponding model, are given under `configs` folder. If you want to use those config files, you need to download pre-trained model weights and move to the folders (whose paths are written in the corresponding JSON file). 
-* TensorFlow package should be installed. All codes are tested with Python 2.7, TensorFlow 1.3 and Ubuntu 16.04. 
+* TensorFlow package should be installed. All codes are tested with Python 2.7, TensorFlow 1.15.0 and Ubuntu 16.04. 
 
 ## Training
 The script `train.py` expects a `JSON` configuration file path as a comand line argument. This file contains the following parameters:
@@ -48,7 +48,7 @@ https://www.rsim.tu-berlin.de/menue/team/tristan_kreuziger/
 
 
 # License
-The code in this repository to facilitate the use of the BigEarthNet archive is licensed under the **MIT License**:
+The code in this repository except the [nets folder](https://gitlab.tu-berlin.de/rsim/bigearthnet-models-tf/tree/master/nets) is licensed under the **MIT License**:
 
 ```
 MIT License
