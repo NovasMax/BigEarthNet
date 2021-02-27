@@ -44,7 +44,7 @@ def run_model(args):
         nb_iteration = int(np.ceil(float(args['training_size'] * args['nb_epoch']) / args['batch_size']))
         iterator_ins = iterator.get_next()
 
-        model = importlib.import_module('models.' + args['model_name']).DNN_model(args['label_type'])
+        model = importlib.import_module('models.' + args['model_name']).DNN_model(args['label_type'], args['modality'])
         model.create_network()
         loss = model.define_loss()
 
