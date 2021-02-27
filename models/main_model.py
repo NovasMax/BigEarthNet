@@ -4,8 +4,8 @@
 #
 # Author: Gencer Sumbul, http://www.user.tu-berlin.de/gencersumbul/
 # Email: gencer.suembuel@tu-berlin.de
-# Date: 23 Dec 2019
-# Version: 1.0.1
+# Date: 27 Feb 2021
+# Version: 1.1.1
 
 import numpy as np
 import tensorflow as tf
@@ -15,8 +15,9 @@ from BigEarthNet import BAND_STATS
 from utils import sparse_to_dense
 
 class Model:
-    def __init__(self, label_type):
+    def __init__(self, label_type, modality):
         self.label_type = label_type
+        self.modality = modality
         self.prediction_threshold = 0.5
         self.is_training = tf.placeholder(tf.bool, [])
         self.nb_class = 19 if label_type == 'BigEarthNet-19' else 43
@@ -32,10 +33,12 @@ class Model:
         self.B09 = tf.placeholder(tf.float32, [None, 20, 20], name='B09')
         self.B11 = tf.placeholder(tf.float32, [None, 60, 60], name='B11')
         self.B12 = tf.placeholder(tf.float32, [None, 60, 60], name='B12')
+        self.VV = tf.placeholder(tf.float32, [None, 120, 120], name='VV')
+        self.VH = tf.placeholder(tf.float32, [None, 120, 120], name='VH')
         self.bands_10m = tf.stack([self.B04, self.B03, self.B02, self.B08], axis=3)
         self.bands_20m = tf.stack([self.B05, self.B06, self.B07, self.B8A, self.B11, self.B12], axis=3)
         self.bands_60m = tf.stack([self.B01, self.B09], axis=3)
-        self.img = tf.concat(
+        self.S2_img = tf.concat(
             [
                 self.bands_10m , 
                 tf.image.resize_bicubic(
@@ -45,6 +48,16 @@ class Model:
             ], 
             axis=3
         )
+        self.S1_img = tf.stack([self.VV, self.VH], axis=3)
+        self.S12_img =  tf.concat([self.S2_img, self.S1_img], axis=3)
+        
+        if self.modality == 'S1':
+            self.img = self.S1_img
+        elif self.modality == 'S2':
+            self.img = self.S2_img
+        elif self.modality == 'MM':
+            self.img = self.S12_img
+        
         self.multi_hot_label = tf.placeholder(tf.float32, shape=(None, self.nb_class))
         self.model_path = tf.placeholder(tf.string)
 
@@ -61,6 +74,8 @@ class Model:
         B09  = ((batch_dict['B09'] - BAND_STATS['mean']['B09']) / BAND_STATS['std']['B09']).astype(np.float32)
         B11  = ((batch_dict['B11'] - BAND_STATS['mean']['B11']) / BAND_STATS['std']['B11']).astype(np.float32)
         B12  = ((batch_dict['B12'] - BAND_STATS['mean']['B12']) / BAND_STATS['std']['B12']).astype(np.float32)
+        VV = ((batch_dict['VV'] - BAND_STATS['S1']['mean']['VV']) / BAND_STATS['S1']['std']['VV']).astype(np.float32)
+        VH = ((batch_dict['VH'] - BAND_STATS['S1']['mean']['VH']) / BAND_STATS['S1']['std']['VH']).astype(np.float32)
         multi_hot_label = batch_dict[
                 'original_labels_multi_hot'
             ].astype(np.float32) if self.label_type == 'original' else batch_dict[
@@ -71,7 +86,8 @@ class Model:
         #
         # original_labels = sparse_to_dense(batch_dict['original_labels'].indices, batch_dict['original_labels'].values)
         # BigEarthNet-19_labels = sparse_to_dense(batch_dict['BigEarthNet-19_labels'].indices, batch_dict['BigEarthNet-19_labels'].values)
-        # patch_name = sparse_to_dense(batch_dict['patch_name'].indices, batch_dict['patch_name'].values)
+        # patch_name_s1 = sparse_to_dense(batch_dict['patch_name_s1'].indices, batch_dict['patch_name_s1'].values)
+        # patch_name_s2 = sparse_to_dense(batch_dict['patch_name_s2'].indices, batch_dict['patch_name_s2'].values)
         
         return {
                 self.B01: B01,
@@ -86,6 +102,8 @@ class Model:
                 self.B09: B09,
                 self.B11: B11,
                 self.B12: B12,
+                self.VV: VV,
+                self.VH: VH,
                 self.multi_hot_label: multi_hot_label, 
                 self.is_training:is_training,
                 self.model_path:model_path

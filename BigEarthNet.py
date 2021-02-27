@@ -4,39 +4,63 @@
 #
 # Author: Gencer Sumbul, http://www.user.tu-berlin.de/gencersumbul/
 # Email: gencer.suembuel@tu-berlin.de
-# Date: 23 Dec 2019
-# Version: 1.0.1
+# Date: 27 Feb 2021
+# Version: 1.1.1
 
 import tensorflow as tf
 
 BAND_STATS = {
-            'mean': {
-                'B01': 340.76769064,
-                'B02': 429.9430203,
-                'B03': 614.21682446,
-                'B04': 590.23569706,
-                'B05': 950.68368468,
-                'B06': 1792.46290469,
-                'B07': 2075.46795189,
-                'B08': 2218.94553375,
-                'B8A': 2266.46036911,
-                'B09': 2246.0605464,
-                'B11': 1594.42694882,
-                'B12': 1009.32729131
+            'S2':{
+                'mean': {
+                    'B01': 340.76769064,
+                    'B02': 429.9430203,
+                    'B03': 614.21682446,
+                    'B04': 590.23569706,
+                    'B05': 950.68368468,
+                    'B06': 1792.46290469,
+                    'B07': 2075.46795189,
+                    'B08': 2218.94553375,
+                    'B8A': 2266.46036911,
+                    'B09': 2246.0605464,
+                    'B11': 1594.42694882,
+                    'B12': 1009.32729131
+                },
+                'std': {
+                    'B01': 554.81258967,
+                    'B02': 572.41639287,
+                    'B03': 582.87945694,
+                    'B04': 675.88746967,
+                    'B05': 729.89827633,
+                    'B06': 1096.01480586,
+                    'B07': 1273.45393088,
+                    'B08': 1365.45589904,
+                    'B8A': 1356.13789355,
+                    'B09': 1302.3292881,
+                    'B11': 1079.19066363,
+                    'B12': 818.86747235
+                }
             },
-            'std': {
-                'B01': 554.81258967,
-                'B02': 572.41639287,
-                'B03': 582.87945694,
-                'B04': 675.88746967,
-                'B05': 729.89827633,
-                'B06': 1096.01480586,
-                'B07': 1273.45393088,
-                'B08': 1365.45589904,
-                'B8A': 1356.13789355,
-                'B09': 1302.3292881,
-                'B11': 1079.19066363,
-                'B12': 818.86747235
+            'S1': {
+                'mean': {
+                    'VV': -12.619993741972035,
+                    'VH': -19.29044597721542,
+                    'VV/VH': 0.6525036195871579,
+                },
+                'std': {
+                    'VV': 5.115911777546365,
+                    'VH': 5.464428464912864,
+                    'VV/VH': 30.75264076801808,
+                },
+                'min': {
+                    'VV': -74.33214569091797,
+                    'VH': -75.11137390136719,
+                    'R': 3.21E-2
+                },
+                'max': {
+                    'VV': 34.60696029663086,
+                    'VH': 33.59768295288086,
+                    'R': 1.08
+                }
             }
         }
 
@@ -76,7 +100,10 @@ class BigEarthNet:
                     'B09': tf.FixedLenFeature([20*20], tf.int64),
                     'B11': tf.FixedLenFeature([60*60], tf.int64),
                     'B12': tf.FixedLenFeature([60*60], tf.int64),
-                    'patch_name': tf.VarLenFeature(dtype=tf.string),
+                    'VV': tf.FixedLenFeature([120*120], tf.float32),
+                    'VH': tf.FixedLenFeature([120*120], tf.float32),
+                    'patch_name_s1': tf.io.VarLenFeature(dtype=tf.string),
+                    'patch_name_s2': tf.io.VarLenFeature(dtype=tf.string),
                     label_type + '_labels': tf.VarLenFeature(dtype=tf.string),
                     label_type + '_labels_multi_hot': tf.FixedLenFeature([nb_class], tf.int64)
                 }
@@ -95,7 +122,10 @@ class BigEarthNet:
             'B09': tf.reshape(parsed_features['B09'], [20, 20]),
             'B11': tf.reshape(parsed_features['B11'], [60, 60]),
             'B12': tf.reshape(parsed_features['B12'], [60, 60]),
-            'patch_name': parsed_features['patch_name'],
+            'VV' : tf.reshape(parsed_features['VV'], [120, 120]),
+            'VH' : tf.reshape(parsed_features['VV'], [120, 120]),
+            'patch_name_s1': parsed_features['patch_name_s1'],
+            'patch_name_s2': parsed_features['patch_name_s2'],
             label_type + '_labels': parsed_features[label_type + '_labels'],
             label_type + '_labels_multi_hot': parsed_features[label_type + '_labels_multi_hot']
         }

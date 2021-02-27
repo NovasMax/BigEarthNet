@@ -14,6 +14,7 @@ This repository contains code to use deep learning models, pre-trained on the [B
 ## Training
 The script `train.py` expects a `JSON` configuration file path as a comand line argument. This file contains the following parameters:
 * `model_name`: The name of the Python code containing the corresponding deep learning model. The code must be located under the `models` directory. The model class will be loaded dynamically based on the `model_name` parameter: `model = importlib.import_module('models.' + args['model_name']).dnn_model(nb_class)`
+* `modality` : A flag to indicate which modality will be used during training: `S1`, `S2` or `MM`. S1 and S2 refer to the BigEarthNet patches from Sentinel-1 and Sentinel-2, respectively while multi-modal (MM) refers to using pairs of S1 and S2 patches together.
 * `label_type`: A flag to indicate which labels will be used during training: `original` or `BigEarthNet-19`
 * `batch_size`: Batch size used during training
 * `nb_epoch`: The number of epochs for the training
@@ -31,6 +32,7 @@ The script `train.py` expects a `JSON` configuration file path as a comand line 
 ## Evaluation
 The script `eval.py` expects a `JSON` configuration file. The needed parameters are as follows:
 * `model_name`: The name of the Python code containing the corresponding deep learning model. The code must be located under the `models` directory. The model class will be loaded dynamically based on the `model_name` parameter: `model = importlib.import_module('models.' + args['model_name']).dnn_model(nb_class)`
+* `modality` : A flag to indicate which modality will be used during evaluation: `S1`, `S2` or `MM`. S1 and S2 refer to the BigEarthNet patches from Sentinel-1 and Sentinel-2, respectively while multi-modal (MM) refers to using pairs of S1 and S2 patches together.
 * `batch_size`: Batch size used during evaluation
 * `out_dir`: The path where all log files and checkpoints will be saved.
 * `test_tf_record_files`: An array containing `TFRecord` files for evaluation.
